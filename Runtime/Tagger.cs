@@ -25,12 +25,22 @@ namespace SAS.TagSystem
             }
         }
 
-		public IEnumerable<Component> Find<T>(string tag) where T : Component
+		public IEnumerable<Component> Find<T>(string tag) where T: Component
 		{
 			return m_Tags.Where(item => item.Value == tag && item.Component.GetType() == typeof(T)).Select(item => item.Component);
 		}
 
-        [SerializeField] private List<Tag> m_Tags = new List<Tag>();
+		public IEnumerable<Component> Find(Type type, string tag)
+		{
+			return m_Tags.Where(item => item.Value == tag && item.Component.GetType() == type).Select(item => item.Component);
+		}
+
+		public Tag Find(Component component)
+		{
+			return m_Tags.FirstOrDefault(tag => tag.Component == component);
+		}
+
+		[SerializeField] private List<Tag> m_Tags = new List<Tag>();
 
 		public List<string> tags = new List<string>();
 
@@ -54,7 +64,7 @@ namespace SAS.TagSystem
 			}
 		}
 
-		public void RemoveTag (string toRemove)
+        public void RemoveTag (string toRemove)
 		{
 			var tag = toRemove.ToLower ();
 			if (tags.Contains (tag)) {
