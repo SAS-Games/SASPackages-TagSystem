@@ -37,7 +37,14 @@ namespace SAS.TagSystemEditor
                         EditorGUI.EndDisabledGroup();
                     }
                     else
-                        tag.stringValue = EditorGUI.TextField(new Rect(rect.width / 2 + 60, rect.y, rect.width / 2, rect.height), tag.stringValue);
+                    {
+                        var value = EditorGUI.DelayedTextField(new Rect(rect.width / 2 + 60, rect.y, rect.width / 2, rect.height), tag.stringValue);
+                        if (value != tag.stringValue)
+                        {
+                            tag.stringValue = value;
+                            tag.serializedObject.ApplyModifiedProperties();
+                        }
+                    }
                 }
             };
         }
