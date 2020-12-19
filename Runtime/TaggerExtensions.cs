@@ -29,12 +29,30 @@ namespace SAS.TagSystem
             return GetComponentByTag(component.GetComponentsInParent<T>(includeInactive), tag);
         }
 
+        public static T[] GetComponentsInChildren<T>(this Component component, string tag, bool includeInactive = false) where T : Component
+        {
+            return GetComponentsByTag(component.GetComponentsInChildren<T>(includeInactive), tag);
+        }
+
+        public static Component[] GetComponentsInChildren(this Component component, Type type, string tag, bool includeInactive = false)
+        {
+            return GetComponentsByTag(component.GetComponentsInChildren(type, includeInactive), tag);
+        }
+
         private static T GetComponentByTag<T>(T[] components, string tag) where T : Component
         {
             if (string.IsNullOrEmpty(tag))
                 return components.FirstOrDefault();
             else
                 return components.FirstOrDefault(component => component.GetComponent<Tagger>()?.Find(component)?.Value == tag);
+        }
+
+        private static T[] GetComponentsByTag<T>(T[] components, string tag) where T : Component
+        {
+            if (string.IsNullOrEmpty(tag))
+                return components;
+            else
+                return components.Where(component => component.GetComponent<Tagger>()?.Find(component)?.Value == tag).ToArray();
         }
     }
 }
