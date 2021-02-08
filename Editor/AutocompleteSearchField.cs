@@ -10,45 +10,19 @@ namespace SAS.TagSystemEditor
 	[Serializable]
 	public class AutocompleteSearchField
 	{
-		static class Styles
-		{
-			public const float resultHeight = 20f;
-			public const float resultsBorderWidth = 2f;
-			public const float resultsMargin = 15f;
-			public const float resultsLabelOffset = 2f;
-
-			public static readonly GUIStyle entryEven;
-			public static readonly GUIStyle entryOdd;
-			public static readonly GUIStyle labelStyle;
-			public static readonly GUIStyle resultsBorderStyle;
-
-			static Styles()
-			{
-				entryOdd = new GUIStyle("CN EntryBackOdd");
-				entryEven = new GUIStyle("CN EntryBackEven");
-				resultsBorderStyle = new GUIStyle("hostview");
-
-				labelStyle = new GUIStyle(EditorStyles.label)
-				{
-					alignment = TextAnchor.MiddleLeft,
-					richText = true
-				};
-			}
-		}
-
 		public Action<List<string>> onInputChanged;
 		public Action<string> onConfirm;
-		
-		private string _searchString;
-		List<string> _originalStrings = new List<string>();
-		List<string> _results = new List<string>(); 
+
+		private string _searchString = string.Empty;
+		private List<string> _originalStrings { get; }
+		private List<string> _results = new List<string>();
 
 
 		SearchField searchField;
 
 		public AutocompleteSearchField(List<string> strArray)
-        {
-			_originalStrings = strArray;
+		{
+			_originalStrings = new List<string>(strArray);
 
 		}
 
@@ -63,45 +37,28 @@ namespace SAS.TagSystemEditor
 
 		private void DoSearchField(Rect rect, bool asToolbar)
 		{
-			if(searchField == null)
+			if (searchField == null)
 				searchField = new SearchField();
 
-			var result = asToolbar
-				? searchField.OnToolbarGUI(rect, _searchString)
-				: searchField.OnGUI(rect, _searchString);
-
+			var result = asToolbar ? searchField.OnToolbarGUI(rect, _searchString) : searchField.OnGUI(rect, _searchString);
 			if (result != _searchString)
 			{
 				FilterSearchResult(result);
 				onInputChanged?.Invoke(_results);
+				_searchString = result;
 			}
 
-			_searchString = result;
-
-			if(HasSearchbarFocused())
-				RepaintFocusedWindow();
+			if (GUIUtility.keyboardControl == searchField.searchFieldControlID)
+				EditorWindow.focusedWindow?.Repaint();
 		}
 
 		private void FilterSearchResult(string searchString)
 		{
 			_results.Clear();
 			if (!string.IsNullOrEmpty(searchString))
-				_results.AddRange(_originalStrings.Where(p => p.Contains(searchString)));
+				_results.AddRange(_originalStrings.Where(p => p.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) != -1));
 			else
-				_results = _originalStrings;
-		}
-
-		bool HasSearchbarFocused()
-		{
-			return GUIUtility.keyboardControl == searchField.searchFieldControlID;
-		}
-
-		static void RepaintFocusedWindow()
-		{
-			if(EditorWindow.focusedWindow != null)
-			{
-				EditorWindow.focusedWindow.Repaint();
-			}
+				_results.AddRange(_originalStrings);
 		}
 	}
 }
