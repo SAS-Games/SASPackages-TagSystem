@@ -42,38 +42,6 @@ namespace SAS.TagSystem
 
 		[SerializeField] private List<Tag> m_Tags = new List<Tag>();
 
-		public List<string> tags = new List<string>();
-
-
-        void Awake ()
-		{
-			/*for (var i = 0; i < tags.Count; i++) {
-				var tag = tags [i];
-				tags [i] = tag.Trim ().ToLower ();
-			}
-			UpdateTagSystem ();*/
-		}
-
-		public void AddTag (string toAdd)
-		{
-			var tag = toAdd.ToLower ();
-			if (!tags.Contains (tag)) {
-				RemoveFromTagSystem ();
-				tags.Add (tag);
-				UpdateTagSystem ();
-			}
-		}
-
-        public void RemoveTag (string toRemove)
-		{
-			var tag = toRemove.ToLower ();
-			if (tags.Contains (tag)) {
-				RemoveFromTagSystem ();
-				tags.Remove (tag);
-				UpdateTagSystem ();
-			}
-		}
-
 		public string GetTag(Component component)
         {
 			var tag = m_Tags.Find(ele => ele.Component == component);
@@ -94,42 +62,5 @@ namespace SAS.TagSystem
 			var tag = m_Tags.Find(ele => ele.Component == component);
 			m_Tags.Remove(tag);
 		}
-
-		public List<string> GetTags ()
-		{
-			return tags;
-		}
-
-		void OnDestroy ()
-		{
-			RemoveFromTagSystem ();
-		}
-
-		void OnDisable ()
-		{
-			RemoveFromTagSystem ();
-		}
-
-		void OnEnable() {
-			UpdateTagSystem ();
-		}
-
-		void UpdateTagSystem ()
-		{
-			TagSystem.AddObject (this);
-		}
-
-		void RemoveFromTagSystem ()
-		{
-			TagSystem.RemoveObject (this);
-		}
-
-#if UNITY_EDITOR
-		private void Reset()
-        {
-			if (!Application.isPlaying)
-				SetTag(transform, "");
-		}
-#endif
 	}
 }
