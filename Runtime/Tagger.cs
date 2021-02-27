@@ -10,22 +10,22 @@ namespace SAS.TagSystem
 	{
 		[Serializable]
 		public class Tag
-        {
+		{
 			[SerializeField] private Component m_Component;
 			[SerializeField] private string m_Value;
 
 			public Component Component => m_Component;
 
-            public string Value { get => m_Value; set => m_Value = value; }
+			public string Value { get => m_Value; set => m_Value = value; }
 
 			public Tag(Component component, string val)
-            {
+			{
 				m_Component = component;
 				m_Value = val;
-            }
-        }
+			}
+		}
 
-		public IEnumerable<Component> Find<T>(string tag) where T: Component
+		public IEnumerable<Component> Find<T>(string tag) where T : Component
 		{
 			return m_Tags.Where(item => item.Value == tag && item.Component.GetType() == typeof(T)).Select(item => item.Component);
 		}
@@ -43,10 +43,10 @@ namespace SAS.TagSystem
 		[SerializeField] private List<Tag> m_Tags = new List<Tag>();
 
 		public string GetTag(Component component)
-        {
+		{
 			var tag = m_Tags.Find(ele => ele.Component == component);
 			return tag?.Value;
-        }
+		}
 
 		public void SetTag(Component component, string tagValue = "")
 		{
@@ -62,5 +62,14 @@ namespace SAS.TagSystem
 			var tag = m_Tags.Find(ele => ele.Component == component);
 			m_Tags.Remove(tag);
 		}
+
+#if UNITY_EDITOR
+		private void Reset()
+		{
+			if (!Application.isPlaying)
+				SetTag(transform, "");
+		}
+#endif
+
 	}
 }
