@@ -11,7 +11,7 @@ namespace SAS.TagSystemEditor
     [CustomEditor(typeof(TagList), true)]
     public class TagListInspectorEditor : Editor
     {
-		AutocompleteSearchField _autocompleteSearchField;
+		//AutocompleteSearchField _autocompleteSearchField;
 		private List<string> _filteredTags = new List<string>() { };
 		private ReorderableList _tagsList;
 
@@ -26,8 +26,8 @@ namespace SAS.TagSystemEditor
 			_filteredTags = (target as TagList).tags.ToList();
 			_filteredTags = _filteredTags.Distinct().ToList();
 
-			_autocompleteSearchField = new AutocompleteSearchField((target as TagList).tags.ToList());
-			_autocompleteSearchField.onInputChanged = OnInputChanged;
+			//_autocompleteSearchField = new AutocompleteSearchField((target as TagList).tags.ToList());
+			//_autocompleteSearchField.onInputChanged = OnInputChanged;
 
 			CreateReorderableList();
 		}
@@ -72,7 +72,7 @@ namespace SAS.TagSystemEditor
 		public override void OnInspectorGUI()
         {
 			GUILayout.Label("Search Tag", EditorStyles.boldLabel);
-			_autocompleteSearchField?.DoSearchField(false);
+			//_autocompleteSearchField?.DoSearchField(false);
 			_tagsList.DoLayoutList();
 		}
 

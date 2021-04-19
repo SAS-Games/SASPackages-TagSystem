@@ -1,14 +1,26 @@
-﻿using SAS.TagSystem;
+﻿using System;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using SAS.Utilities.Editor;
+using EditorUtility = SAS.Utilities.Editor.EditorUtility;
 
-namespace SAS.TagSystemEditor
+namespace SAS.TagSystem.Editor
 {
     [CustomEditor(typeof(Tagger), true)]
-    public class TaggerEditor : Editor
+    public class TaggerEditor : UnityEditor.Editor
     {
         private ReorderableList _componentTagList;
+        private static TagList _tagList;
+        private static TagList TagList
+        {
+            get
+            {
+                if (_tagList == null)
+                    _tagList = Resources.Load("Tag List", typeof(TagList)) as TagList;
+                return _tagList;
+            }
+        }
 
         private void OnEnable()
         {
@@ -28,23 +40,13 @@ namespace SAS.TagSystemEditor
                     var oldValue = tag.stringValue;
                     EditorGUI.BeginDisabledGroup(true);
                     EditorGUI.ObjectField(new Rect(rect.x + 5, rect.y, rect.width / 2, rect.height), component.objectReferenceValue, typeof(Component), false);
-                  
+
                     EditorGUI.EndDisabledGroup();
-                    if (component.objectReferenceValue is MonoBehaviour)
-                    {
-                        EditorGUI.BeginDisabledGroup(true);
-                        EditorGUI.LabelField(new Rect(rect.width / 2 + 60, rect.y, rect.width / 2, rect.height), tag.stringValue);
-                        EditorGUI.EndDisabledGroup();
-                    }
-                    else
-                    {
-                        var value = EditorGUI.DelayedTextField(new Rect(rect.width / 2 + 60, rect.y, rect.width / 2, rect.height), tag.stringValue);
-                        if (value != tag.stringValue)
-                        {
-                            tag.stringValue = value;
-                            tag.serializedObject.ApplyModifiedProperties();
-                        }
-                    }
+
+                    Rect pos = new Rect(rect.width / 2 + 60, rect.y, rect.width / 2 - 20, rect.height);
+                    int id = GUIUtility.GetControlID("SearchableStringDrawer".GetHashCode(), FocusType.Keyboard, pos);
+                    EditorUtility.DropDown(id, pos, TagList.tags, Array.IndexOf(TagList.tags, tag.stringValue), ind => OnTagSelected(component.objectReferenceValue, ind));
+
                 }
             };
         }
@@ -52,6 +54,13 @@ namespace SAS.TagSystemEditor
         public override void OnInspectorGUI()
         {
             _componentTagList.DoLayoutList();
+        }
+
+        private void OnTagSelected(UnityEngine.Object targetObject, int index)
+        {
+            var tagger = ((Component)target).gameObject.GetComponent<Tagger>();
+            if (index != -1)
+                tagger.SetTag((Component)targetObject, TagList.tags[index]);
         }
     }
 }

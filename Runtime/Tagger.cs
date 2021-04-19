@@ -62,14 +62,5 @@ namespace SAS.TagSystem
 			var tag = m_Tags.Find(ele => ele.Component == component);
 			m_Tags.Remove(tag);
 		}
-
-#if UNITY_EDITOR
-		private void Reset()
-		{
-			if (!Application.isPlaying)
-				SetTag(transform, "");
-		}
-#endif
-
 	}
 }
