@@ -1,7 +1,7 @@
 {
   "name": "com.sas.tagsystem",
   "version": "0.0.1",
-  "displayName": "SAS TagSystem",
+  "displayName": "com.sas.tagsystem",
   "unity": "2019.1",
   "hideInEditor": true
 }
