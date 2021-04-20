@@ -1,15 +1,12 @@
-﻿using SAS.TagSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace SAS.TagSystemEditor
+namespace SAS.TagSystem.Editor
 {
     [CustomEditor(typeof(TagList), true)]
-    public class TagListInspectorEditor : Editor
+    public class TagListInspectorEditor : UnityEditor.Editor
     {
 		private ReorderableList _tagsList;
 		private SerializedProperty _tags; 
