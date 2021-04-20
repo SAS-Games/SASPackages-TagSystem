@@ -12,18 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17542eece5b493f4f88c8da9884efda2, type: 3}
   m_Name: Tag List
   m_EditorClassIdentifier: 
-  tags:
-  - ABC
-  - New Tag
-  - New Tag 1
-  - New Tag 2
-  - New Tag 3
-  - New Tag 4
-  - New Tag 5
-  - New Tag 6
-  - New Tag 7
-  - New Tag 8
-  - New Tag 9
-  - New Tag 10
-  - New Tag 11
-  - New Tag 12
+  tags: []
