@@ -11,68 +11,62 @@ namespace SAS.TagSystemEditor
     [CustomEditor(typeof(TagList), true)]
     public class TagListInspectorEditor : Editor
     {
-		//AutocompleteSearchField _autocompleteSearchField;
-		private List<string> _filteredTags = new List<string>() { };
 		private ReorderableList _tagsList;
-
-		public static void Show()
-        {
-			var tagListSO = Resources.Load<TagList>("Tag List");
-			Selection.activeObject = tagListSO;
-		}
+		private SerializedProperty _tags; 
 
 		private void OnEnable()
 		{
-			_filteredTags = (target as TagList).tags.ToList();
-			_filteredTags = _filteredTags.Distinct().ToList();
-
-			//_autocompleteSearchField = new AutocompleteSearchField((target as TagList).tags.ToList());
-			//_autocompleteSearchField.onInputChanged = OnInputChanged;
-
+			_tags = serializedObject.FindProperty("tags");
 			CreateReorderableList();
 		}
 
 		private void CreateReorderableList()
-        {
-			_tagsList = new ReorderableList(_filteredTags, typeof(string), false, true, true, true);
+		{
+			_tagsList = new ReorderableList(serializedObject, _tags, false, true, true, true);
 			_tagsList.drawHeaderCallback = (Rect rect) =>
 			{
 				EditorGUI.LabelField(rect, "Tags");
 			};
 
-			_tagsList.onAddCallback = list =>
+			_tagsList.onAddCallback = (list) =>
 			{
-				var tags = (target as TagList).tags;
-				var tag = GetUniqueName("New Tag", (target as TagList).tags);
-				Array.Resize(ref tags, tags.Length + 1);
-				tags[tags.Length - 1] = tag;
-				(target as TagList).tags = tags;
-				_filteredTags.Add(tag);
+				_tags.InsertArrayElementAtIndex(_tags.arraySize);
+				var currValue = _tags.GetArrayElementAtIndex(_tags.arraySize - 1);
+				var newValue = GetUniqueName("New Tag", (target as TagList).tags);
+				currValue.stringValue = newValue;
+				serializedObject.ApplyModifiedProperties();
+			};
+
+			_tagsList.onRemoveCallback = (list) =>
+			{
+				Debug.Log(list.index);
+				if (_tags.GetArrayElementAtIndex(list.index) != null)
+					_tags.DeleteArrayElementAtIndex(list.index);
+				_tags.DeleteArrayElementAtIndex(list.index);
+				serializedObject.ApplyModifiedProperties();
 			};
 
 			_tagsList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
 			{
-				if (_filteredTags.Count > 0)
+				if (_tags.arraySize > 0)
 				{
-					var oldValue = _filteredTags[index];
-					var newValue = EditorGUI.DelayedTextField(new Rect(rect.x + 5, rect.y, rect.width - 10, rect.height), _filteredTags[index]);
-					if (newValue != oldValue)
-						_filteredTags[index] = newValue;
+					EditorGUI.BeginDisabledGroup(true);
+					EditorGUI.TextField(new Rect(rect.x + 5, rect.y, rect.width / 2, rect.height), "Tag " + index);
+					EditorGUI.EndDisabledGroup();
+					var currValue = _tags.GetArrayElementAtIndex(index);
+					var newValue = EditorGUI.DelayedTextField(new Rect(rect.width / 2 + 40, rect.y, rect.width / 2 - 20, rect.height), currValue.stringValue);
+					if (newValue != currValue.stringValue)
+					{
+						newValue = GetUniqueName(newValue, (target as TagList).tags);
+						currValue.stringValue = newValue;
+						serializedObject.ApplyModifiedProperties();
+					}
 				}
 			};
 		}
 
-
-		private void OnInputChanged(List<string> filteredTags)
-        {
-			_filteredTags = filteredTags;
-			CreateReorderableList();
-		}
-
 		public override void OnInspectorGUI()
         {
-			GUILayout.Label("Search Tag", EditorStyles.boldLabel);
-			//_autocompleteSearchField?.DoSearchField(false);
 			_tagsList.DoLayoutList();
 		}
 

@@ -45,8 +45,7 @@ namespace SAS.TagSystem.Editor
 
                     Rect pos = new Rect(rect.width / 2 + 60, rect.y, rect.width / 2 - 20, rect.height);
                     int id = GUIUtility.GetControlID("SearchableStringDrawer".GetHashCode(), FocusType.Keyboard, pos);
-                    EditorUtility.DropDown(id, pos, TagList.tags, Array.IndexOf(TagList.tags, tag.stringValue), ind => OnTagSelected(component.objectReferenceValue, ind));
-
+                    EditorUtility.DropDown(id, pos, TagList.tags, Array.IndexOf(TagList.tags, tag.stringValue), selectedIndex => OnTagSelected(component.objectReferenceValue, selectedIndex), ShowTagList);
                 }
             };
         }
@@ -61,6 +60,11 @@ namespace SAS.TagSystem.Editor
             var tagger = ((Component)target).gameObject.GetComponent<Tagger>();
             if (index != -1)
                 tagger.SetTag((Component)targetObject, TagList.tags[index]);
+        }
+
+        private void ShowTagList()
+        {
+            Selection.activeObject = TagList;
         }
     }
 }
