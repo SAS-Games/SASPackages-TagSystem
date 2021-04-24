@@ -38,7 +38,6 @@ namespace SAS.TagSystem.Editor
 			{
 				if (_tags.GetArrayElementAtIndex(list.index) != null)
 					_tags.DeleteArrayElementAtIndex(list.index);
-				//_tags.DeleteArrayElementAtIndex(list.index);
 				serializedObject.ApplyModifiedProperties();
 			};
 
