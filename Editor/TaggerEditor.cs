@@ -58,8 +58,7 @@ namespace SAS.TagSystem.Editor
         private void OnTagSelected(UnityEngine.Object targetObject, int index)
         {
             var tagger = ((Component)target).gameObject.GetComponent<Tagger>();
-            if (index != -1)
-                tagger.SetTag((Component)targetObject, TagList.tags[index]);
+            tagger.SetTag((Component)targetObject, index != -1 ? TagList.tags[index] : string.Empty);
         }
 
         private void ShowTagList()

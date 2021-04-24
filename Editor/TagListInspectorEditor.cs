@@ -36,10 +36,9 @@ namespace SAS.TagSystem.Editor
 
 			_tagsList.onRemoveCallback = (list) =>
 			{
-				Debug.Log(list.index);
 				if (_tags.GetArrayElementAtIndex(list.index) != null)
 					_tags.DeleteArrayElementAtIndex(list.index);
-				_tags.DeleteArrayElementAtIndex(list.index);
+				//_tags.DeleteArrayElementAtIndex(list.index);
 				serializedObject.ApplyModifiedProperties();
 			};
 
