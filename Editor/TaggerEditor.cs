@@ -12,7 +12,7 @@ namespace SAS.TagSystem.Editor
     {
         private ReorderableList _componentTagList;
         private static TagList _tagList;
-        private static TagList TagList
+        public static TagList TagList
         {
             get
             {
