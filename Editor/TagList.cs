@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEditor;
+using UnityEngine;
 
 namespace SAS.TagSystem.Editor
 {
@@ -10,7 +12,22 @@ namespace SAS.TagSystem.Editor
 
         public static TagList Instance(string assetName = "Tag List")
         {
-            var tagListAssets = Resources.Load(assetName, typeof(TagList)) as TagList;
+            var basePath = "Assets/Editor Default Resources/TagList/";
+            var filePath = $"Assets/Editor Default Resources/TagList/{assetName}.asset";
+            if (!Directory.Exists(basePath))
+            {
+                Directory.CreateDirectory(basePath);
+            }
+
+            var asset = AssetDatabase.LoadAssetAtPath<TagList>(filePath);
+            if (asset == null)
+            {
+                asset = CreateInstance<TagList>();
+                AssetDatabase.CreateAsset(asset, $"{filePath}");
+                AssetDatabase.SaveAssets();
+            }
+
+            var tagListAssets = EditorGUIUtility.Load(filePath) as TagList;
             return tagListAssets;
         }
 
