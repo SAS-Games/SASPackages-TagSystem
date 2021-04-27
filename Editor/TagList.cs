@@ -8,7 +8,7 @@ namespace SAS.TagSystem.Editor
     [System.Serializable]
     public class TagList : ScriptableObject
     {
-        public string[] tags;
+        public string[] tags = new string[] { };
 
         public static TagList Instance(string assetName = "Tag List")
         {
