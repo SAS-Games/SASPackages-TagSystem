@@ -2,7 +2,6 @@
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using SAS.Utilities.Editor;
 using EditorUtility = SAS.Utilities.Editor.EditorUtility;
 
 namespace SAS.TagSystem.Editor
@@ -11,16 +10,8 @@ namespace SAS.TagSystem.Editor
     public class TaggerEditor : UnityEditor.Editor
     {
         private ReorderableList _componentTagList;
-        private static TagList Instance;
-        public static string[] TagList
-        {
-            get
-            {
-                if (Instance == null)
-                    Instance = Resources.Load("Tag List", typeof(TagList)) as TagList;
-                return Instance.tags;
-            }
-        }
+        private string[] Tags => TagList.GetList();
+        private static TagList Instance => TagList.Instance();
 
         private void OnEnable()
         {
@@ -45,7 +36,7 @@ namespace SAS.TagSystem.Editor
 
                     Rect pos = new Rect(rect.width / 2 + 60, rect.y, rect.width / 2 - 20, rect.height);
                     int id = GUIUtility.GetControlID("SearchableStringDrawer".GetHashCode(), FocusType.Keyboard, pos);
-                    EditorUtility.DropDown(id, pos, TagList, Array.IndexOf(TagList, tag.stringValue), selectedIndex => OnTagSelected(component.objectReferenceValue, selectedIndex), ShowTagList);
+                    EditorUtility.DropDown(id, pos, Tags, Array.IndexOf(Tags, tag.stringValue), selectedIndex => OnTagSelected(component.objectReferenceValue, selectedIndex), ShowTagList);
                 }
             };
         }
@@ -58,7 +49,7 @@ namespace SAS.TagSystem.Editor
         private void OnTagSelected(UnityEngine.Object targetObject, int index)
         {
             var tagger = ((Component)target).gameObject.GetComponent<Tagger>();
-            tagger.SetTag((Component)targetObject, index != -1 ? TagList[index] : string.Empty);
+            tagger.SetTag((Component)targetObject, index != -1 ? Tags[index] : string.Empty);
         }
 
         private void ShowTagList()
