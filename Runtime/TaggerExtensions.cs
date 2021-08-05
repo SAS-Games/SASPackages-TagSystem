@@ -6,12 +6,17 @@ namespace SAS.TagSystem
 {
     public static class TaggerExtensions
     {
-        public static T GetComponent<T>(this Component component, string tag) where T : Component
+        public static T GetComponent<T>(this Component component, string tag)
+        {
+            return (T)(object)component.GetComponent(typeof(T), tag);
+        }
+
+        public static Component GetComponent(this Component component, Type type, string tag)
         {
             if (string.IsNullOrEmpty(tag))
-                return component.GetComponent<T>();
+                return component.GetComponent(type);
             else
-                return (T)component.GetComponent<Tagger>()?.Find<T>(tag).FirstOrDefault();
+                return component.GetComponent<Tagger>()?.Find(type, tag).FirstOrDefault();
         }
 
         public static T GetComponentInChildren<T>(this Component component, string tag, bool includeInactive = false) where T : Component
