@@ -13,15 +13,17 @@ namespace SAS.TagSystem
 
         public static Component GetComponent(this Component component, Type type, string tag)
         {
-            if (string.IsNullOrEmpty(tag))
-                return component.GetComponent(type);
-            else
-                return component.GetComponent<Tagger>()?.Find(type, tag).FirstOrDefault();
+            return GetComponentByTag(component.GetComponents(type), tag);
         }
 
-        public static T GetComponentInChildren<T>(this Component component, string tag, bool includeInactive = false) where T : Component
+        public static Component[] GetComponents(this Component component, Type type, string tag)
         {
-            return GetComponentByTag(component.GetComponentsInChildren<T>(includeInactive), tag);
+            return GetComponentsByTag(component.GetComponents(type), tag);
+        }
+
+        public static T GetComponentInChildren<T>(this Component component, string tag, bool includeInactive = false)
+        {
+            return (T)(object)component.GetComponentInChildren(typeof(T), tag, includeInactive);
         }
 
         public static Component GetComponentInChildren(this Component component, Type type, string tag, bool includeInactive = false)
@@ -29,14 +31,30 @@ namespace SAS.TagSystem
             return GetComponentByTag(component.GetComponentsInChildren(type, includeInactive), tag);
         }
 
-        public static T GetComponentInParent<T>(this Component component, string tag, bool includeInactive = false) where T : Component
+        public static T GetComponentInParent<T>(this Component component, string tag, bool includeInactive = false)
         {
-            return GetComponentByTag(component.GetComponentsInParent<T>(includeInactive), tag);
+            return (T)(object)component.GetComponentsInParent(typeof(T), tag, includeInactive);
         }
 
-        public static T[] GetComponentsInChildren<T>(this Component component, string tag, bool includeInactive = false) where T : Component
+        public static Component GetComponentInParent(this Component component, Type type, string tag, bool includeInactive = false)
         {
-            return GetComponentsByTag(component.GetComponentsInChildren<T>(includeInactive), tag);
+            return GetComponentByTag(component.GetComponentsInParent(type, includeInactive), tag);
+        }
+
+        public static T[] GetComponentsInParent<T>(this Component component, string tag, bool includeInactive = false)
+        {
+            return (T[])(object)component.GetComponentInParent(typeof(T), tag, includeInactive);
+        }
+
+        public static Component[] GetComponentsInParent(this Component component, Type type, string tag, bool includeInactive = false)
+        {
+            return GetComponentsByTag(component.GetComponentsInParent(type, includeInactive), tag);
+        }
+
+        public static T[] GetComponentsInChildren<T>(this Component component, string tag, bool includeInactive = false)
+        {
+            return (T[])(object)component.GetComponentInChildren(typeof(T), tag, includeInactive);
+            //return GetComponentsByTag(component.GetComponentsInChildren<T>(includeInactive), tag);
         }
 
         public static Component[] GetComponentsInChildren(this Component component, Type type, string tag, bool includeInactive = false)
