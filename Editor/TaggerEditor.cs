@@ -50,6 +50,7 @@ namespace SAS.TagSystem.Editor
         {
             var tagger = ((Component)target).gameObject.GetComponent<Tagger>();
             tagger.SetTag((Component)targetObject, index != -1 ? Tags[index] : string.Empty);
+            UnityEditor.EditorUtility.SetDirty(target);
         }
 
         private void ShowTagList()
