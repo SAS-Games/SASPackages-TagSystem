@@ -48,12 +48,10 @@ namespace SAS.TagSystem
 			return tag?.Value;
 		}
 
-		public void SetTag(Component component, string tagValue = "")
+		public void AddTag(Component component, string tagValue = "")
 		{
 			var tag = m_Tags.Find(ele => ele.Component == component);
-			if (tag != null)
-				tag.Value = tagValue;
-			else
+			if (!tag.Value.Equals(tagValue, StringComparison.OrdinalIgnoreCase))
 				m_Tags.Add(new Tag(component, tagValue));
 		}
 
@@ -61,6 +59,13 @@ namespace SAS.TagSystem
 		{
 			var tag = m_Tags.Find(ele => ele.Component == component);
 			m_Tags.Remove(tag);
+		}
+
+		public void RemoveAllTags(Component component)
+		{
+			var tags = m_Tags.FindAll(ele => ele.Component == component);
+			foreach (var tag in tags)
+				m_Tags.Remove(tag);
 		}
 	}
 }

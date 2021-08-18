@@ -1,5 +1,4 @@
-﻿using SAS.TagSystem;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,7 +15,8 @@ namespace SAS.TagSystem.Editor
 
             if (tagger == null)
                 tagger = self.gameObject.AddComponent<Tagger>();
-            tagger.SetTag(self);
+            tagger.AddTag(self);
+            UnityEditor.EditorUtility.SetDirty(self);
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         }
 
@@ -26,6 +26,17 @@ namespace SAS.TagSystem.Editor
             var self = (Component)command.context;
             var tagger = self.gameObject.GetComponent<Tagger>();
             tagger.RemoveTag(self);
+            UnityEditor.EditorUtility.SetDirty(self);
+            EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+        }
+
+        [MenuItem("CONTEXT/Component/RemoveAll Tags")]
+        private static void RemoveAllTags(MenuCommand command)
+        {
+            var self = (Component)command.context;
+            var tagger = self.gameObject.GetComponent<Tagger>();
+            tagger.RemoveAllTags(self);
+            UnityEditor.EditorUtility.SetDirty(self);
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         }
     }

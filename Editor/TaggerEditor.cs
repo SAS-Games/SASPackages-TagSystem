@@ -15,7 +15,7 @@ namespace SAS.TagSystem.Editor
 
         private void OnEnable()
         {
-            _componentTagList = new ReorderableList(serializedObject, serializedObject.FindProperty("m_Tags"), true, true, false, false);
+            _componentTagList = new ReorderableList(serializedObject, serializedObject.FindProperty("m_Tags"), true, true, false, true);
             _componentTagList.drawHeaderCallback = (Rect rect) =>
             {
                 EditorGUI.LabelField(rect, "Tagged Component List");
@@ -36,7 +36,8 @@ namespace SAS.TagSystem.Editor
 
                     Rect pos = new Rect(rect.width / 2 + 60, rect.y, rect.width / 2 - 20, rect.height);
                     int id = GUIUtility.GetControlID("SearchableStringDrawer".GetHashCode(), FocusType.Keyboard, pos);
-                    EditorUtility.DropDown(id, pos, Tags, Array.IndexOf(Tags, tag.stringValue), selectedIndex => OnTagSelected(component.objectReferenceValue, selectedIndex), ShowTagList);
+
+                    EditorUtility.DropDown(id, pos, Tags, Array.IndexOf(Tags, tag.stringValue), selectedIndex => OnTagSelected(index, selectedIndex), ShowTagList);
                 }
             };
         }
@@ -46,10 +47,12 @@ namespace SAS.TagSystem.Editor
             _componentTagList.DoLayoutList();
         }
 
-        private void OnTagSelected(UnityEngine.Object targetObject, int index)
+        private void OnTagSelected(int componentIndex, int index)
         {
-            var tagger = ((Component)target).gameObject.GetComponent<Tagger>();
-            tagger.SetTag((Component)targetObject, index != -1 ? Tags[index] : string.Empty);
+            var tagList = serializedObject.FindProperty("m_Tags");
+            var tagProperty = tagList.GetArrayElementAtIndex(componentIndex);
+            tagProperty.FindPropertyRelative("m_Value").stringValue = index != -1 ? Tags[index] : string.Empty;
+            serializedObject.ApplyModifiedProperties();
             UnityEditor.EditorUtility.SetDirty(target);
         }
 

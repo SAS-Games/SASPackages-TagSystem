@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -34,6 +36,12 @@ namespace SAS.TagSystem.Editor
         public static string[] GetList(string assetName = "Tag List")
         {
             return Instance(assetName).tags;
+        }
+
+        public static void AddTag(string tag)
+        {
+            if (Array.IndexOf(Instance("Tag List").tags, tag) == -1)
+                Instance("Tag List").tags = Instance("Tag List").tags.Concat(new string[] { tag }).ToArray();
         }
     }
 }
