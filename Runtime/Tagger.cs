@@ -51,7 +51,7 @@ namespace SAS.TagSystem
 		public void AddTag(Component component, string tagValue = "")
 		{
 			var tag = m_Tags.Find(ele => ele.Component == component);
-			if (!tag.Value.Equals(tagValue, StringComparison.OrdinalIgnoreCase))
+			if (tag == null || !tag.Value.Equals(tagValue, StringComparison.OrdinalIgnoreCase))
 				m_Tags.Add(new Tag(component, tagValue));
 		}
 

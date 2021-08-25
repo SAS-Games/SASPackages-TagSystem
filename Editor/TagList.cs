@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -10,7 +11,8 @@ namespace SAS.TagSystem.Editor
     [System.Serializable]
     public class TagList : ScriptableObject
     {
-        public string[] tags = new string[] { };
+        public const string KeysIdentifier = "Key List";
+        public string[] values = new string[] { };
 
         public static TagList Instance(string assetName = "Tag List")
         {
@@ -35,13 +37,25 @@ namespace SAS.TagSystem.Editor
 
         public static string[] GetList(string assetName = "Tag List")
         {
-            return Instance(assetName).tags;
+            return Instance(assetName).values;
         }
 
-        public static void AddTag(string tag)
+        public void Add(string value, string assetName = "Tag List")
         {
-            if (Array.IndexOf(Instance("Tag List").tags, tag) == -1)
-                Instance("Tag List").tags = Instance("Tag List").tags.Concat(new string[] { tag }).ToArray();
+            if (Array.IndexOf(values, value) == -1)
+                values = values.Concat(new string[] { value }).ToArray();
+        }
+
+        public void Remove(int index)
+        {
+            values = values.Where(e => e != values[index]).ToArray();
+        }
+
+        public void AddRange(List<string> values, string assetName = "Tag List")
+        {
+            this.values = this.values.Concat(values).ToArray();
+            this.values = this.values.Distinct().ToArray();
+            EditorUtility.SetDirty(this);
         }
     }
 }
